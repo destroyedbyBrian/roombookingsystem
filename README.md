@@ -43,3 +43,18 @@ Use these steps to clone from SourceTree, our client for using the repository co
 4. Open the directory you just created to see your repository’s files.
 
 Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+
+---
+
+## Scope of Project
+
+Room creation and management //only done by a staff user
+
+1. Create a room
+2. Launch a room (make available for reservations of a newly created room)
+3. Adjust the price (each booking is chargeable), date/time, promotional codes, and capacity of room. 
+
+Room booking //only done by a student user
+
+1. View the list of rooms available
+2. Make a booking
