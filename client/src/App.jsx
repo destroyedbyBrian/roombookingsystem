@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import IndexPage from "./pages/IndexPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import Signup from "./pages/SignupPage.jsx";
+import LaunchPage from "./pages/LaunchPage.jsx";
 import axios from "axios";
 import { UserContextProvider } from "./UserContext.jsx";
 
@@ -15,6 +16,7 @@ function App() {
         <Route index element={<IndexPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/launchroom" element={<LaunchPage />} />
       </Routes>
     </UserContextProvider>
   );

@@ -1,7 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-// const mongoose = require("mongoose");
-// const User = require("./models/User.js");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
 const app = express();
@@ -30,26 +28,6 @@ const pool = mysql.createPool({
   database: "roombookingsys",
 });
 
-// const User = pool.query(
-//   `
-// CREATE TABLE users (
-//   id INT AUTO_INCREMENT PRIMARY KEY,
-//   name VARCHAR(255),
-//   email VARCHAR(255) UNIQUE,
-//   password VARCHAR(255)
-// )
-// `,
-//   (err) => {
-//     if (err) throw err;
-//     console.log("Table created successfully");
-//   }
-// );
-
-// test api
-app.get("/test", (req, res) => {
-  res.send("test api is workingggggggg");
-});
-
 // Create a new user document in the database
 app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
@@ -58,7 +36,7 @@ app.post("/signup", async (req, res) => {
     const encryptedPassword = bcrypt.hashSync(password, 10);
 
     const [rows] = await pool.query(
-      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+      "INSERT INTO user (name, email, password) VALUES (?, ?, ?)",
       [name, email, encryptedPassword]
     );
 
@@ -68,12 +46,12 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-// Login a user and send back the user document if the login is successful
+// login a user and send back the user document if the login is successful
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const [users] = await pool.query("SELECT * FROM users WHERE email = ?", [
+    const [users] = await pool.query("SELECT * FROM user WHERE email = ?", [
       email,
     ]);
     const userDoc = users[0];
@@ -118,6 +96,57 @@ app.get("/profile", async (req, res) => {
     });
   } else {
     res.json(null);
+  }
+});
+
+// Create room details in the database
+app.post("/launchroom", async (req, res) => {
+  const {
+    launchStartTime,
+    launchEndTime,
+    promoCode,
+    price,
+    capacity,
+    roomStatus,
+  } = req.body;
+
+  try {
+    const [rows] = await pool.query(
+      "INSERT INTO launch_room_details (launchStartTime, launchEndTime, promoCode, price, capacity, roomStatus ) VALUES (?, ?, ?, ?, ?, ?)",
+      [launchStartTime, launchEndTime, promoCode, price, capacity, roomStatus]
+    );
+
+    res.json(rows);
+  } catch (e) {
+    res.status(422).json(e);
+  }
+});
+
+// Retrieve room details from the database
+app.get("/launchroom", async (req, res) => {
+  // const { token } = req.cookies;
+  // jwt.verify(token, jwtSecret, {}, async (err, userData) => {})
+
+  try {
+    const [rows] = await pool.query("SELECT * FROM launch_room_details");
+    res.json(rows);
+  } catch (e) {
+    res.status(422).json(e);
+  }
+});
+
+// Update room status in the database
+app.patch("/launchroom", async (req, res) => {
+  const { id, roomStatus } = req.body;
+
+  try {
+    const [rows] = await pool.query(
+      "UPDATE launch_room_details SET roomStatus = ? WHERE id = ?",
+      [roomStatus, id]
+    );
+    res.json(rows);
+  } catch (e) {
+    res.status(422).json(e);
   }
 });
 

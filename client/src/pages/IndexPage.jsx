@@ -5,7 +5,7 @@ import { UserContext } from "../UserContext";
 import { format } from "date-fns";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/dist/style.css";
-import ResourceCalendar from "./ResourceCalendar";
+// import ResourceCalendar from "./ResourceCalendar";
 
 export default function IndexPage() {
   const { user } = useContext(UserContext);
@@ -65,7 +65,10 @@ export default function IndexPage() {
           fromMonth={defaultMonth}
           toDate={new Date(2023, 12)}
         />
-        <ResourceCalendar />
+        <Link to={"/LaunchRoom"} className="font-bold">
+          Test LaunchPage
+        </Link>
+        {/* <ResourceCalendar /> */}
       </div>
     </div>
   );
