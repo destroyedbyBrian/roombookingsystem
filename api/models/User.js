@@ -1,26 +1,3 @@
-// const { Sequelize, DataTypes } = require("sequelize");
-
-// const sequelize = new Sequelize("database", "username", "password", {
-//   host: "localhost",
-//   dialect: "mysql",
-// });
-
-// // creates a new table for the user
-// const User = sequelize.define("User", {
-//   name: {
-//     type: DataTypes.STRING,
-//   },
-//   email: {
-//     type: DataTypes.STRING,
-//     unique: true,
-//   },
-//   password: {
-//     type: DataTypes.STRING,
-//   },
-// });
-
-// module.exports = User;
-
 const mysql = require("mysql2");
 
 // creates a connection to the database
