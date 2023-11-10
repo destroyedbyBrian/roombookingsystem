@@ -102,6 +102,7 @@ app.get("/profile", async (req, res) => {
 // Create room details in the database
 app.post("/launchroom", async (req, res) => {
   const {
+    pickDate,
     launchStartTime,
     launchEndTime,
     promoCode,
@@ -112,8 +113,16 @@ app.post("/launchroom", async (req, res) => {
 
   try {
     const [rows] = await pool.query(
-      "INSERT INTO launch_room_details (launchStartTime, launchEndTime, promoCode, price, capacity, roomStatus ) VALUES (?, ?, ?, ?, ?, ?)",
-      [launchStartTime, launchEndTime, promoCode, price, capacity, roomStatus]
+      "INSERT INTO launch_room_details (pickDate, launchStartTime, launchEndTime, promoCode, price, capacity, roomStatus ) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [
+        pickDate,
+        launchStartTime,
+        launchEndTime,
+        promoCode,
+        price,
+        capacity,
+        roomStatus,
+      ]
     );
 
     res.json(rows);

@@ -5,6 +5,11 @@ import axios from "axios";
 import { timeStart } from "../helpers/startTime.js";
 import { timeEnd } from "../helpers/endTime.js";
 import { useState, useEffect, useRef } from "react";
+import dayjs from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 // import { DataGrid } from "@mui/x-data-grid";
 // import { useReducer } from "react";
@@ -25,7 +30,7 @@ import { useState, useEffect, useRef } from "react";
 
 export default function LaunchPage() {
   // const [state, dispatch] = useReducer(reducer, initialStatus);
-
+  const [pickDate, setPickDate] = useState(dayjs("2023-11-10"));
   const [launchStartTime, setLaunchStartTime] = useState("8am");
   const [launchEndTime, setLaunchEndTime] = useState("9am");
   const [promoCode, setPromoCode] = useState("");
@@ -41,6 +46,7 @@ export default function LaunchPage() {
     e.preventDefault();
     try {
       await axios.post("/launchroom", {
+        pickDate,
         launchStartTime,
         launchEndTime,
         promoCode,
@@ -93,6 +99,20 @@ export default function LaunchPage() {
       >
         <Container className="bg-white rounded-lg shadow-md p-6">
           <div className="grid grid-cols-2 gap-4 mb-6">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={["DatePicker"]}>
+                <DatePicker
+                  label="date picker"
+                  value={pickDate}
+                  // onChange={(newValue) => setPickDate(newValue)}
+                  onChange={(newValue) => {
+                    const date = new Date(newValue);
+                    setPickDate(date.toLocaleDateString("en-GB"));
+                  }}
+                  format="DD/MM/YYYY"
+                />
+              </DemoContainer>
+            </LocalizationProvider>
             <TextField
               id="outlined-select-startTime"
               select
@@ -186,6 +206,9 @@ export default function LaunchPage() {
       <div className="mt-8 grid grid-cols-5 gap-4">
         {rooms.map((room) => (
           <div key={room.id} className="bg-gray-100 p-4 rounded-lg">
+            <p>
+              <strong>Date</strong> {room.pickDate}
+            </p>
             <p>
               <strong>Start Time:</strong> {room.launchStartTime}
             </p>
