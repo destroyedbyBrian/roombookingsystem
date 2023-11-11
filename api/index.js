@@ -6,6 +6,7 @@ const app = express();
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const mysql = require("mysql2/promise");
+const { v4: uuidv4 } = require("uuid");
 
 app.use(express.json()); // allows the server to read json from the front end
 app.use(cookieParser()); // allows the server to read cookies from the front end
@@ -20,7 +21,7 @@ app.use(
   })
 );
 
-// creates a connection to the database
+// Creates a connection to the database
 const pool = mysql.createPool({
   host: "localhost",
   user: "root",
@@ -30,31 +31,51 @@ const pool = mysql.createPool({
 
 // Create a new user document in the database
 app.post("/signup", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   try {
     const encryptedPassword = bcrypt.hashSync(password, 10);
-
-    const [rows] = await pool.query(
-      "INSERT INTO user (name, email, password) VALUES (?, ?, ?)",
-      [name, email, encryptedPassword]
-    );
-
-    res.json(rows);
+    if (role === "student") {
+      studentId = "STU" + uuidv4();
+      const [rows] = await pool.query(
+        "INSERT INTO Student (name, email, password, studentId) VALUES (?, ?, ?, ?)",
+        [name, email, encryptedPassword, studentId]
+      );
+      res.json(rows);
+    } else if (role === "staff") {
+      staffId = "STF" + uuidv4();
+      const [rows] = await pool.query(
+        "INSERT INTO Staff (name, email, password, staffId) VALUES (?, ?, ?, ?)",
+        [name, email, encryptedPassword, staffId]
+      );
+      res.json(rows);
+    } else {
+      return res.status(400).send({ message: "Invalid role" });
+    }
   } catch (e) {
     res.status(422).json(e);
   }
 });
 
-// login a user and send back the user document if the login is successful
+// Login a user and send back the user document if the login is successful
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, role } = req.body;
 
   try {
-    const [users] = await pool.query("SELECT * FROM user WHERE email = ?", [
-      email,
-    ]);
-    const userDoc = users[0];
+    let userDoc;
+
+    if (role === "student") {
+      const [users] = await pool.query(
+        "SELECT * FROM Student WHERE email = ?",
+        [email]
+      );
+      userDoc = users[0];
+    } else if (role === "staff") {
+      const [users] = await pool.query("SELECT * FROM Staff WHERE email = ?", [
+        email,
+      ]);
+      userDoc = users[0];
+    }
 
     if (userDoc) {
       const passwordCorrect = bcrypt.compareSync(password, userDoc.password);
@@ -83,16 +104,32 @@ app.post("/login", async (req, res) => {
 // Retrieve user details from the database
 app.get("/profile", async (req, res) => {
   const { token } = req.cookies; // gets the jwt token from the front end
+
   if (token) {
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
       // verifies the jwt token
-      if (err) throw err;
-      const user = await User.findOne({ where: { id: userData.id } }); // finds the user in the database
-      if (user) {
-        res.json({ name: user.name, email: user.email, id: user.id }); // sends the user data to the front end
-      } else {
-        res.json(null);
+      if (err) {
+        res.status(401).json({ message: "Invalid token" });
+        return;
       }
+
+      // finds the user in the database
+      const query =
+        "SELECT * FROM Student UNION SELECT * FROM Staff WHERE staffId = ?";
+      const values = [userData.staffId];
+      pool.query(query, values, (err, results) => {
+        if (err) {
+          res.status(500).json({ message: "Error querying the database" });
+          return;
+        }
+
+        if (results.length > 0) {
+          const user = results[0];
+          res.json({ name: user.name }); // sends the user's name to the front end
+        } else {
+          res.json(null);
+        }
+      });
     });
   } else {
     res.json(null);

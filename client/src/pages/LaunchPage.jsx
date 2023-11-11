@@ -30,7 +30,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function LaunchPage() {
   // const [state, dispatch] = useReducer(reducer, initialStatus);
-  const [pickDate, setPickDate] = useState(dayjs("2023-11-10"));
+  const [pickDate, setPickDate] = useState(dayjs("2023-11-1"));
   const [launchStartTime, setLaunchStartTime] = useState("8am");
   const [launchEndTime, setLaunchEndTime] = useState("9am");
   const [promoCode, setPromoCode] = useState("");
