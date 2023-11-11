@@ -6,11 +6,12 @@ export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
 
   async function registerUser(e) {
     e.preventDefault();
     try {
-      await axios.post("/signup", { name, email, password }); // Sends a POST request to /signup
+      await axios.post("/signup", { name, email, password, role }); // Sends a POST request to /signup
       alert("Account created successfully! Please login to continue");
     } catch (err) {
       alert("Sign up failed! Please try again");
@@ -64,6 +65,30 @@ export default function Signup() {
               type="password"
               placeholder="Re-enter password"
             /> */}
+            <div className="flex mt-4">
+              <input
+                type="radio"
+                id="student"
+                name="role"
+                value="student"
+                checked={role === "student"}
+                onChange={(e) => setRole(e.target.value)}
+                className="mr-2 text-blue-500 focus:ring-blue-500"
+              />
+              <label htmlFor="student" className="mr-4">
+                Student
+              </label>
+              <input
+                type="radio"
+                id="staff"
+                name="role"
+                value="staff"
+                checked={role === "staff"}
+                onChange={(e) => setRole(e.target.value)}
+                className="mr-2 text-blue-500 focus:ring-blue-500"
+              />
+              <label htmlFor="staff">Staff</label>
+            </div>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-12 py-2 px-4 rounded-xl w-full">
               Sign up
             </button>
