@@ -32,6 +32,8 @@ const pool = mysql.createPool({
 // Create a new user document in the database
 app.post("/signup", async (req, res) => {
   const { name, email, password, role } = req.body;
+  let studentId;
+  let staffId;
 
   try {
     const encryptedPassword = bcrypt.hashSync(password, 10);
@@ -86,34 +88,39 @@ app.post("/login", async (req, res) => {
           jwtSecret,
           {},
           (err, token) => {
-            if (err) throw err;
+            if (err) {
+              res.status(500).json({ message: "Error signing token" });
+              return;
+            }
             res.cookie("token", token).json(userDoc);
           }
         );
       } else {
-        res.json("password incorrect");
+        res.status(401).json({ message: "Invalid password" });
       }
     } else {
-      res.json("user not found");
+      res.status(404).json({ message: "User not found" });
     }
   } catch (e) {
     res.status(422).json(e);
   }
 });
 
+// Logout a user by deleting the cookie
+app.post("/logout", async (_, res) => {
+  res.clearCookie("token").json({ message: "Logged out" });
+});
+
 // Retrieve user details from the database
-app.get("/profile", async (req, res) => {
+app.get("/index", async (req, res) => {
   const { token } = req.cookies; // gets the jwt token from the front end
 
   if (token) {
     jwt.verify(token, jwtSecret, {}, async (err, userData) => {
-      // verifies the jwt token
       if (err) {
         res.status(401).json({ message: "Invalid token" });
         return;
       }
-
-      // finds the user in the database
       const query =
         "SELECT * FROM Student UNION SELECT * FROM Staff WHERE staffId = ?";
       const values = [userData.staffId];
@@ -122,10 +129,9 @@ app.get("/profile", async (req, res) => {
           res.status(500).json({ message: "Error querying the database" });
           return;
         }
-
         if (results.length > 0) {
           const user = results[0];
-          res.json({ name: user.name }); // sends the user's name to the front end
+          res.json({ name: user.name });
         } else {
           res.json(null);
         }
@@ -136,62 +142,180 @@ app.get("/profile", async (req, res) => {
   }
 });
 
-// Create room details in the database
-app.post("/launchroom", async (req, res) => {
-  const {
-    pickDate,
-    launchStartTime,
-    launchEndTime,
-    promoCode,
-    price,
-    capacity,
-    roomStatus,
-  } = req.body;
+app.get("/role", async (req, res) => {
+  const { name } = req.query;
 
   try {
     const [rows] = await pool.query(
-      "INSERT INTO launch_room_details (pickDate, launchStartTime, launchEndTime, promoCode, price, capacity, roomStatus ) VALUES (?, ?, ?, ?, ?, ?, ?)",
-      [
-        pickDate,
-        launchStartTime,
-        launchEndTime,
-        promoCode,
-        price,
-        capacity,
-        roomStatus,
-      ]
+      "SELECT tag FROM Staff WHERE name = ? UNION SELECT tag FROM Student WHERE name = ?",
+      [name, name]
     );
-
     res.json(rows);
   } catch (e) {
     res.status(422).json(e);
   }
 });
 
-// Retrieve room details from the database
-app.get("/launchroom", async (req, res) => {
-  // const { token } = req.cookies;
-  // jwt.verify(token, jwtSecret, {}, async (err, userData) => {})
+// Create room feature
+app.post("/createroompage", async (req, res) => {
+  const { roomNo, pickDate, capacity, price, promoCode } = req.body;
 
   try {
-    const [rows] = await pool.query("SELECT * FROM launch_room_details");
+    const [rows] = await pool.query(
+      "INSERT INTO RoomDetails (roomNo, pickDate, capacity, price,promoCode) VALUES (?, ?, ?, ?, ?)",
+      [roomNo, pickDate, capacity, price, promoCode]
+    );
     res.json(rows);
   } catch (e) {
     res.status(422).json(e);
   }
 });
 
-// Update room status in the database
-app.patch("/launchroom", async (req, res) => {
+// Retrieve created room's details from the database
+app.get("/createroompage", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM RoomDetails");
+    res.json(rows);
+  } catch (e) {
+    res.status(422).json(e);
+  }
+});
+
+// Retrieve created room's details from the database
+app.get("/bookroompage", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM RoomDetails");
+    res.json(rows);
+  } catch (e) {
+    res.status(422).json(e);
+  }
+});
+
+// Lauch room feature
+app.patch("/createroompage", async (req, res) => {
   const { id, roomStatus } = req.body;
 
   try {
     const [rows] = await pool.query(
-      "UPDATE launch_room_details SET roomStatus = ? WHERE id = ?",
+      "UPDATE RoomDetails SET roomStatus = ? WHERE id = ?",
       [roomStatus, id]
     );
     res.json(rows);
   } catch (e) {
+    res.status(422).json(e);
+  }
+});
+
+// Grab all launched rooms to display on the main page
+app.get("/indexpage", async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM RoomDetails WHERE roomStatus = 'Available' "
+    );
+    res.json(rows);
+  } catch (e) {
+    res.status(422).json(e);
+  }
+});
+
+// Book room feature
+app.patch("/bookroompage", async (req, res) => {
+  const { id, startTime, endTime, roomStatus, bookedBy } = req.body;
+
+  const { token } = req.cookies;
+  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+    if (err) {
+      res.status(401).json({ message: "Invalid token" });
+      return;
+    } else {
+      try {
+        const [rows] = await pool.query(
+          "UPDATE RoomDetails SET startTime = ?, endTime = ?, roomStatus = ?, bookedBy = ? WHERE id = ?",
+          [startTime, endTime, roomStatus, bookedBy, id]
+        );
+        res.json(rows);
+      } catch (e) {
+        res.status(422).json(e);
+      }
+    }
+  });
+});
+
+// Grab all booked rooms from the database
+app.get("/bookedpage", async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM RoomDetails WHERE roomStatus = 'Booked' "
+    );
+    res.json(rows);
+  } catch (e) {
+    res.status(422).json(e);
+  }
+});
+
+// Grab bookings by user for View my bookings page
+app.get("/viewmybookings", async (req, res) => {
+  const { bookedBy } = req.query;
+  const { token } = req.cookies;
+
+  jwt.verify(token, jwtSecret, {}, async (err, userData) => {
+    if (err) {
+      res.status(401).json({ message: "Invalid token" });
+      return;
+    } else {
+      try {
+        const [rows] = await pool.query(
+          "SELECT * FROM RoomDetails WHERE bookedBy = ?",
+          [bookedBy]
+        );
+        res.json(rows);
+      } catch (e) {
+        res.status(422).json(e);
+      }
+    }
+  });
+});
+
+// Modify booked room feature
+app.patch("/modifybookingpage", async (req, res) => {
+  const { id, startTime, endTime } = req.body;
+
+  try {
+    const [rows] = await pool.query(
+      "UPDATE RoomDetails SET startTime = ?, endTime = ? WHERE id = ?",
+      [startTime, endTime, id]
+    );
+    res.json(rows);
+  } catch (e) {
+    res.status(422).json(e);
+  }
+});
+
+// Delete booking feature
+app.patch("/viewmybookings", async (req, res) => {
+  const { id, roomStatus, bookedBy } = req.body;
+
+  console.log(req.body); // Log the request body
+
+  try {
+    // Check if the id exists in the RoomDetails table
+    const [existingRows] = await pool.query(
+      "SELECT * FROM RoomDetails WHERE id = ?",
+      [id]
+    );
+    if (existingRows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No booking found with the provided id." });
+    }
+
+    const [rows] = await pool.query(
+      "UPDATE RoomDetails SET roomStatus = ?, bookedBy = ? WHERE id = ?",
+      [roomStatus, bookedBy, id]
+    );
+    res.json(rows);
+  } catch (e) {
+    console.log(e); // Log the error
     res.status(422).json(e);
   }
 });

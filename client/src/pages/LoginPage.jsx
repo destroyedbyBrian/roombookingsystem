@@ -1,7 +1,7 @@
 import { Link, Navigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import axios from "axios";
-import { UserContext } from "../UserContext";
+import { UserContext } from "../context/UserContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -12,19 +12,19 @@ export default function LoginPage() {
   const { setUser } = useContext(UserContext);
 
   async function LoginUser(e) {
-    e.preventDefault(); // Prevents page from refreshing
+    e.preventDefault(); // prevents page from refreshing
     try {
       const { data } = await axios.post("/login", { email, password, role }); // Sends a POST request to /login
       setUser(data);
       alert("Login successful");
-      setRedirect(true);
+      setRedirect(true); // Redirect to homepage
     } catch (err) {
-      alert("Login failed");
+      alert("Login failed! Please try again");
     }
   }
 
   if (redirect) {
-    return <Navigate to={"/"} />; // Redirect to homepage
+    return <Navigate to={"/index"} />; // Redirect to homepage
   }
 
   return (
@@ -33,8 +33,8 @@ export default function LoginPage() {
         className="object-scale-down h-30 w-80 flex mx-auto"
         src="https://uowplaybook.s3-ap-southeast-2.amazonaws.com/logo/logo-secondary.png"
       />
-      <div className="container mx-auto flex-grow flex items-center justify-evenly flex-row mb-20 ">
-        <div className="bg-white p-8 rounded-lg shadow-md">
+      <div className="container mx-auto flex-grow flex items-center justify-evenly flex-row mb-20">
+        <div className="bg-zinc-50 p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-4 flex">Welcome back!</h1>
           <h2 className="flex font-semibold mt-7 mb-7">
             Enter your credentials to access your account
@@ -83,7 +83,7 @@ export default function LoginPage() {
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-12 py-2 px-4 rounded-xl w-full">
               Login
             </button>
-            <div className="mt-4">
+            <div className="mt-2 flex justify-center gap-1">
               Don&apos;t have an account?{" "}
               <Link
                 to={"/Signup"}

@@ -11,7 +11,7 @@ export default function Signup() {
   async function registerUser(e) {
     e.preventDefault();
     try {
-      await axios.post("/signup", { name, email, password, role }); // Sends a POST request to /signup
+      await axios.post("/signup", { name, email, password, role });
       alert("Account created successfully! Please login to continue");
     } catch (err) {
       alert("Sign up failed! Please try again");
@@ -25,7 +25,7 @@ export default function Signup() {
         src="https://uowplaybook.s3-ap-southeast-2.amazonaws.com/logo/logo-secondary.png"
       />
       <div className="container mx-auto flex-grow flex items-center justify-evenly flex-row mb-20 ">
-        <div className="bg-white p-8 rounded-lg shadow-md">
+        <div className="bg-zinc-50 p-8 rounded-lg shadow-md">
           <h1 className="text-2xl font-bold mb-4 flex">Create a new account</h1>
           <h2 className="flex font-semibold mt-7 mb-7">
             Provide your credentials to create a new account
@@ -92,8 +92,8 @@ export default function Signup() {
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-12 py-2 px-4 rounded-xl w-full">
               Sign up
             </button>
-            <div className="mt-4">
-              <Link to={"/Login"} className="text-blue-500 hover:text-blue-700">
+            <div className="mt-2 flex justify-center">
+              <Link to={"/"} className="text-blue-500 hover:text-blue-700">
                 Already have an account?
               </Link>
             </div>

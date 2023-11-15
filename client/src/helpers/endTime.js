@@ -1,42 +1,42 @@
 export const timeEnd = [
   {
-    value: "9am",
-    label: "9am",
+    value: "09:00",
+    label: "09:00",
   },
   {
-    value: "10am",
-    label: "10am",
+    value: "10:00",
+    label: "10:00",
   },
   {
-    value: "11am",
-    label: "11am",
+    value: "11:00",
+    label: "11:00",
   },
   {
-    value: "12pm",
-    label: "12pm",
+    value: "12:00",
+    label: "12:00",
   },
   {
-    value: "1pm",
-    label: "1pm",
+    value: "13:00",
+    label: "13:00",
   },
   {
-    value: "2pm",
-    label: "2pm",
+    value: "14:00",
+    label: "14:00",
   },
   {
-    value: "3pm",
-    label: "3pm",
+    value: "15:00",
+    label: "15:00",
   },
   {
-    value: "4pm",
-    label: "4pm",
+    value: "16:00",
+    label: "16:00",
   },
   {
-    value: "5pm",
-    label: "5pm",
+    value: "17:00",
+    label: "17:00",
   },
   {
-    value: "6pm",
-    label: "6pm",
+    value: "18:00",
+    label: "18:00",
   },
 ];
