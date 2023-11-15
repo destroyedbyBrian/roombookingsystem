@@ -15,6 +15,8 @@ import UserRole from "./components/UserRole.jsx";
 axios.defaults.baseURL = "http://localhost:4000";
 axios.defaults.withCredentials = true;
 
+// got to manually set path for look for bookedpage
+
 function App() {
   return (
     <UserContextProvider>

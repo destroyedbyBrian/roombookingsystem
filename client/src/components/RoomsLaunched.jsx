@@ -9,6 +9,8 @@ export default function RoomsLaunched() {
 
   const buttonRef = useRef();
 
+  const storedUserRole = localStorage.getItem("role");
+
   // const handleVerificationKeyChange = (event) => {
   //   setVerificationKey(event.target.value);
   // };
@@ -93,7 +95,7 @@ export default function RoomsLaunched() {
               <strong className="text-gray-700">Status:</strong>{" "}
               {room.roomStatus}
             </p>
-            {room.roomStatus !== "Booked" && (
+            {room.roomStatus !== "Booked" && storedUserRole !== "staff" && (
               <button
                 ref={buttonRef}
                 onClick={() => launchRoom(room.id)}
