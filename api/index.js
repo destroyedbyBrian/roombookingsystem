@@ -23,10 +23,10 @@ app.use(
 
 // Creates a connection to the database
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "screwthisshitS9922756G@",
-  database: "roombookingsys",
+  host: process.env.HOST,
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE,
 });
 
 // Create a new user document in the database
@@ -173,6 +173,7 @@ app.post("/createroompage", async (req, res) => {
 
 // Retrieve created room's details from the database
 app.get("/createroompage", async (req, res) => {
+  const { token } = req.cookies;
   try {
     const [rows] = await pool.query("SELECT * FROM RoomDetails");
     res.json(rows);

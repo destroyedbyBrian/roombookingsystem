@@ -29,9 +29,10 @@ export default function NavBar() {
       .then(({ data }) => {
         if (data[0]) {
           setRole(data[0].tag);
+          localStorage.setItem("role", data[0].tag);
         }
       });
-  }, [storedUserName]);
+  }, []);
 
   return (
     <div>
