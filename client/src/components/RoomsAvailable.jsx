@@ -44,10 +44,10 @@ export default function RoomsAvailable() {
               <strong className="text-gray-700">Capacity:</strong>{" "}
               {room.capacity}
             </p>
-            <p className="mb-2">
+            {/* <p className="mb-2">
               <strong className="text-gray-700">Promo Code:</strong>{" "}
               {room.promoCode}
-            </p>
+            </p> */}
             <p className="mb-2">
               <strong className="text-gray-700">Price:</strong> {room.price}
             </p>
