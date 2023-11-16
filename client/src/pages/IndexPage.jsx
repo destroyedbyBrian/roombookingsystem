@@ -2,6 +2,7 @@ import NavBar from "../components/NavBar";
 import Filter from "../components/Filter";
 import Calendar from "../components/Calendar";
 import RoomsAvailable from "../components/RoomsAvailable";
+import RoomsLaunched from "../components/RoomsLaunched";
 
 export default function IndexPage() {
   const storedUserRole = localStorage.getItem("role");
@@ -14,6 +15,12 @@ export default function IndexPage() {
       </div>
       <div className="flex mx-5 gap-20">
         <Calendar />
+        {storedUserRole === "staff" && (
+          <div>
+            <h2 className="text-2xl font-bold mb-4">All Room Statuses</h2>
+            <RoomsLaunched />
+          </div>
+        )}
         {storedUserRole === "student" && (
           <div>
             <h2 className="text-2xl font-bold mb-4">Available Rooms</h2>
