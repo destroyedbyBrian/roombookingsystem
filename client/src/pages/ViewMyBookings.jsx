@@ -37,6 +37,7 @@ export default function ViewMyBookings() {
         bookedBy: "",
       });
       alert("Booking was successfully deleted");
+      window.location.reload();
     } catch (err) {
       alert("cancellation was not successful");
     } finally {

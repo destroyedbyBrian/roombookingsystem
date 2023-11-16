@@ -41,6 +41,7 @@ export default function RoomsLaunched() {
         roomStatus: "Available",
       });
       alert("Room has been successfully launched!");
+      window.location.reload();
     } catch (err) {
       alert("Room launch failed! Please try again");
     }
