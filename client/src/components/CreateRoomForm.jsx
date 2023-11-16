@@ -11,7 +11,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function CreateRoomForm() {
   const [roomNo, setRoomNo] = useState(1);
-  const [pickDate, setPickDate] = useState(dayjs("2023-11-14"));
+  const [pickDate, setPickDate] = useState(dayjs("2023-11-16"));
   const [capacity, setCapacity] = useState("");
   const [price, setPrice] = useState("");
   const [promoCode, setPromoCode] = useState("");

@@ -50,9 +50,11 @@ export default function NavBar() {
             </button>
           </Link>
           <Link to={"/viewmybookings"}>
-            <button className="text-lg font-bold text-gray-700 hover:text-blue-500 transition-colors duration-200">
-              My Bookings
-            </button>
+            {role === "student" && (
+              <button className="text-lg font-bold text-gray-700 hover:text-blue-500 transition-colors duration-200">
+                My Bookings
+              </button>
+            )}
           </Link>
           <Link
             to={"/createroompage"}
