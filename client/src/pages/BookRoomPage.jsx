@@ -50,6 +50,7 @@ export default function BookRoomPage() {
         bookedBy: storedUserName,
       });
       setIsModalOpen(false);
+      alert("Booking successful");
     } catch (err) {
       alert("Booking successful"); // fake response
     }

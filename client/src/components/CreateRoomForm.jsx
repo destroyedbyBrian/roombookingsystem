@@ -51,6 +51,7 @@ export default function CreateRoomForm() {
               className="w-full"
               value={roomNo}
               onChange={handleRoomNoChange}
+              isRequired
             >
               {[1, 2, 3, 4, 5].map((option) => (
                 <MenuItem key={option} value={option}>
