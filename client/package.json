@@ -10,9 +10,20 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@material/data-table": "^14.0.0",
+    "@mui/material": "^5.14.16",
+    "@mui/x-data-grid": "^6.18.0",
+    "@mui/x-date-pickers": "^6.18.1",
     "axios": "^1.6.0",
+    "date-fns": "^2.30.0",
+    "dayjs": "^1.11.10",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
+    "react-day-picker": "^8.9.1",
     "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
     "react-router-dom": "^6.18.0"
   },
   "devDependencies": {
