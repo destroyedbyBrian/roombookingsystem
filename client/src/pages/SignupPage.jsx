@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
@@ -8,11 +8,14 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
 
+  const navigate = useNavigate();
+
   async function registerUser(e) {
     e.preventDefault();
     try {
       await axios.post("/signup", { name, email, password, role });
       alert("Account created successfully! Please login to continue");
+      navigate("/");
     } catch (err) {
       alert("Sign up failed! Please try again");
     }
@@ -57,14 +60,6 @@ export default function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {/* <h3 className="flex text-sm font-medium -mb-1 mt-1">
-              Confirm Password
-            </h3> */}
-            {/* <input
-              className="w-full border border-gray-200 my-2 py-1.5 px-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
-              type="password"
-              placeholder="Re-enter password"
-            /> */}
             <div className="flex mt-4">
               <input
                 type="radio"
