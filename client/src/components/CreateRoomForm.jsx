@@ -32,6 +32,7 @@ export default function CreateRoomForm() {
         promoCode,
       });
       alert("Room has been successfully created!");
+      window.location.reload();
     } catch (err) {
       alert("Room creation failed! Please try again");
     }
