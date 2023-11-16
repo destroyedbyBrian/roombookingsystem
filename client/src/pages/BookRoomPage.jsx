@@ -9,6 +9,7 @@ import { Container } from "@mui/material";
 import Filter from "../components/Filter";
 import Calendar from "../components/Calendar";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function BookRoomPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -166,12 +167,14 @@ export default function BookRoomPage() {
                 <input className="block w-full mt-2 p-2 border border-gray-300 rounded-md" />
               </div>
             </div>
-            <button
-              className="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onClick={confirmBooking}
-            >
-              Confirm Booking
-            </button>
+            <Link to={"/viewmybookings"}>
+              <button
+                className="w-full mt-8 py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onClick={confirmBooking}
+              >
+                Confirm Booking
+              </button>
+            </Link>
           </div>
         </div>
       </Modal>
